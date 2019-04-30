@@ -1,30 +1,43 @@
-import React, {useState} from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react'
 
-function App() {
-  const [count, setCount] = useState(0)
+const INITIAL_LIST = [
+  {
+    id: '0',
+    title: 'React with RxJS for State Management Tutorial',
+    url: 'https://www.robinwieruch.de/react-rxjs-state-management-tutorial/'
+  },
+  {
+    id: '1',
+    title: 'A complete React with Apollo and GraphQL Tutorial',
+    url: 'https://www.robinwieruch.de/react-graphql-apollo-tutorial'
+  }
+]
 
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    <div>{count}</div>
-    <button onClick={() => setCount(count + 1)}>Count</button>
-    </div>
-  );
+function getNewItem() {
+  return {
+    id: `${Math.floor(Math.random() * 99 + 1)}`,
+    title: `Hello ${Math.floor(Math.random() * 9) + 1}`,
+    url: 'https://google.com'
+  }
 }
 
-export default App;
+export default function App() {
+  const [list, setList] = useState(INITIAL_LIST)
+
+  const addItem = () => {
+    setList([...list, getNewItem()])
+  }
+
+  return (
+    <ul>
+      {list.map(item => (
+        <li key={item.id}>
+          <a href={item.url}>{item.title}</a>
+        </li>
+      ))}
+      <li>
+        <button onClick={addItem}>Click</button>
+      </li>
+    </ul>
+  )
+}
