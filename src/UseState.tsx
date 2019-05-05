@@ -10,13 +10,13 @@ const Section = styled.section`
     margin-bottom: 10px;
   }
 `
-interface Item {
+interface IItem {
   id: string
   title: string
   url: string
 }
 
-const INITIAL_LIST: Item[] = [
+const INITIAL_LIST: IItem[] = [
   {
     id: '0',
     title: 'React with RxJS for State Management Tutorial',
@@ -44,7 +44,7 @@ export default function UseState() {
     setList([...list, getNewItem()])
   }
 
-  const removeItem = (item: Item) => {
+  const removeItem = (item: IItem) => {
     setList(list.filter(itm => itm !== item))
   }
 

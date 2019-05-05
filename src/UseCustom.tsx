@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { Text } from 'rebass'
 
 const Section = styled.section`
-  display: block;
+  display: block
   margin-bottom: 25px;
 
   & > h1 {

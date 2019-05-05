@@ -1,25 +1,30 @@
-import React, { useReducer, useState, SyntheticEvent } from 'react'
-import { Box, Text, Button, Link, Flex } from 'rebass'
-import styled from 'styled-components'
+import React, { useReducer, createContext } from 'react'
+import { Box, Text } from 'rebass'
+import Filter from './Filter'
+import { ITodo } from './TodoItem'
+import Todos from './Todos'
+import AddTodo from './AddTodo'
+import uuid from 'uuid/v1'
 
-interface Todo {
-  id: number
-  title: string
-  isCompleted: boolean
+interface IAction {
+  type?: string
+  dataLoad?: any
 }
 
-let id = 3
+type Dispatch = (action: IAction) => void
 
-const todoReducer = (state: Todo[], action: { type: string; dataLoad?: any }) => {
+export const TodoContext = createContext<Dispatch | null>(null)
+
+const todoReducer = (state: ITodo[], action: IAction) => {
   switch (action.type) {
     case 'ADD':
       return [
         ...state,
         {
-          id: ++id,
+          id: uuid(),
           title: action.dataLoad.title,
-          isCompleted: false
-        }
+          isCompleted: false,
+        },
       ]
     case 'UNDO':
       return state.map(todo => {
@@ -41,17 +46,37 @@ const todoReducer = (state: Todo[], action: { type: string; dataLoad?: any }) =>
       return state.filter(todo => todo.id !== action.dataLoad.id)
 
     default:
-      throw new Error('Some shit done poped off')
+      return state
+  }
+}
+
+const filterReducer = (state: string, action: IAction) => {
+  switch (action.type) {
+    case 'SHOW_ALL':
+      return 'ALL'
+    case 'SHOW_COMPLETE':
+      return 'COMPLETE'
+    case 'SHOW_INCOMPLETE':
+      return 'INCOMPLETE'
+    default:
+      return state
   }
 }
 
 export default function UseReducer() {
-  const [state, dispatch] = useReducer(todoReducer, [])
-  console.log(state)
+  const [state, dispatchTodo] = useReducer(todoReducer, [])
+  const [filter, dispatchFilter] = useReducer(filterReducer, 'ALL')
+  const dispatch = (action: IAction) => [dispatchTodo, dispatchFilter].forEach(f => f(action))
 
-  function handleSubmit(value: string) {
-    dispatch({ type: 'ADD', dataLoad: { title: value } })
-  }
+  const filteredTodos = state.filter(todo => {
+    if (filter === 'ALL') return true
+
+    if (filter === 'COMPLETE' && todo.isCompleted) return true
+
+    if (filter === 'INCOMPLETE' && !todo.isCompleted) return true
+
+    return false
+  })
 
   return (
     <Box width={[1 / 4]}>
@@ -59,43 +84,11 @@ export default function UseReducer() {
         useReducer
       </Text>
 
-      {state.map(todo => (
-        <Flex mb={2} key={todo.id} alignItems="center" justifyContent="space-between">
-          <Text mr={4} style={{ textDecoration: todo.isCompleted ? 'line-through' : 'none' }}>
-            {todo.title}
-          </Text>
-          {todo.isCompleted ? (
-            <Button bg="purple" onClick={() => dispatch({ type: 'UNDO', dataLoad: { id: todo.id } })}>
-              X
-            </Button>
-          ) : (
-            <Button bg="green" onClick={() => dispatch({ type: 'DONE', dataLoad: { id: todo.id } })}>
-              √
-            </Button>
-          )}
-          <Button onClick={() => dispatch({ type: 'DELETE', dataLoad: { id: todo.id } })} ml={2} bg="red">
-            Delete
-          </Button>
-        </Flex>
-      ))}
-
-      <Input handleSubmit={handleSubmit} />
+      <TodoContext.Provider value={dispatch}>
+        <Filter filter={filter} />
+        <Todos todos={filteredTodos} />
+        <AddTodo />
+      </TodoContext.Provider>
     </Box>
-  )
-}
-
-function Input({ handleSubmit }: { handleSubmit: any }) {
-  const [value, handleChange] = useState('')
-
-  function onSubmit(e: SyntheticEvent) {
-    e.preventDefault()
-    handleSubmit(value)
-    handleChange('')
-  }
-
-  return (
-    <form onSubmit={onSubmit}>
-      <input value={value} type="text" placeholder="Enter todo" onChange={e => handleChange(e.target.value)} />
-    </form>
   )
 }

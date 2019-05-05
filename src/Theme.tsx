@@ -1,7 +1,7 @@
 import React from 'react'
 import { ThemeProvider } from 'styled-components'
 
-interface Props {
+interface IThemeProps {
   children: any
 }
 const blue = '#07c'
@@ -26,6 +26,6 @@ const theme = {
   }
 }
 
-export default function Theme(props: Props) {
+export default function Theme(props: IThemeProps) {
   return <ThemeProvider theme={theme}>{props.children}</ThemeProvider>
 }
