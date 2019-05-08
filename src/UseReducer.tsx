@@ -1,7 +1,7 @@
-import React, { useReducer, createContext } from 'react'
-import { Box, Text } from 'rebass'
+import React, {useReducer, createContext} from 'react'
+import {Box, Text} from 'rebass'
 import Filter from './Filter'
-import { ITodo } from './TodoItem'
+import {ITodo} from './TodoItem'
 import Todos from './Todos'
 import AddTodo from './AddTodo'
 import uuid from 'uuid/v1'
@@ -66,7 +66,8 @@ const filterReducer = (state: string, action: IAction) => {
 export default function UseReducer() {
   const [state, dispatchTodo] = useReducer(todoReducer, [])
   const [filter, dispatchFilter] = useReducer(filterReducer, 'ALL')
-  const dispatch = (action: IAction) => [dispatchTodo, dispatchFilter].forEach(f => f(action))
+  const dispatch = (action: IAction) =>
+    [dispatchTodo, dispatchFilter].forEach(f => f(action))
 
   const filteredTodos = state.filter(todo => {
     if (filter === 'ALL') return true

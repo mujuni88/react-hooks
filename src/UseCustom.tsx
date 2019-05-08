@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
-import { Text } from 'rebass'
+import {Text} from 'rebass'
 
 const Section = styled.section`
   display: block
@@ -40,7 +40,11 @@ export default function UseCustom() {
   return (
     <Section>
       <h1>useCustom</h1>
-      {isOffline ? <Text color="red">I'm offline</Text> : <Text color="green">I'm online</Text>}
+      {isOffline ? (
+        <Text color="red">I'm offline</Text>
+      ) : (
+        <Text color="green">I'm online</Text>
+      )}
     </Section>
   )
 }

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, {useState, useEffect} from 'react'
 import styled from 'styled-components'
-import { Button } from 'rebass'
+import {Button} from 'rebass'
 
 const Section = styled.section`
   display: block;
